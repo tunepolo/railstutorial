@@ -13,6 +13,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_template 'users/new'
     assert_select 'div#error_explanation'
     assert_select 'div.field_with_errors'
+    assert_select 'form[action="/signup"]'
   end
 
 end
