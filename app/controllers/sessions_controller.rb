@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       # ユーザログイン成功。ユーザ情報のページへリダイレクト
       log_in user
-      remember user
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       redirect_to user
     else
       # ユーザログイン失敗。エラーメッセージを作成する。
