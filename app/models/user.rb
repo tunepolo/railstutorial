@@ -24,6 +24,16 @@ class User < ApplicationRecord
   # 永続セッションのためにユーザをデータベースに記憶する
   def remember
     self.remember_token = User.new_token
-    update_attribue(:remember_digest, User.digest(remember_token))
+    update_attribute(:remember_digest, User.digest(remember_token))
+  end
+
+  # 渡されたトークンがダイジェストと一致したらtrueを返す
+  def authenticated?(remember_token)
+    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  end
+
+  # ユーザのログイン情報を破棄する
+  def forget
+    update_attribute(:remember_digest, nil)
   end
 end
