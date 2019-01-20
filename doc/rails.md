@@ -2,7 +2,21 @@
 
 ## モデル生成
 
-下記のフィールドを持つMicropostモデルを生成する場合。
+Userモデルを生成する。
+
+| field | type |
+|:-|:-|
+| id | integer |
+| name | string |
+| email | string |
+| created_at | datetime |
+| updated_at | datetime |
+
+```
+$ rails generate model User name:string email:string
+```
+
+Userモデルと関連を持つMicropostモデルを生成する。
 
 | field | type |
 |:-|:-|
@@ -15,5 +29,3 @@
 ```sh
 $ rails generate model Micropost content:text user:references
 ```
-
-##
