@@ -29,3 +29,9 @@ Userモデルと関連を持つMicropostモデルを生成する。
 ```sh
 $ rails generate model Micropost content:text user:references
 ```
+
+## DBのマイグレーション
+
+```
+$ rails db:migrate
+```
