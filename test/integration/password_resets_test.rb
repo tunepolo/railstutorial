@@ -47,22 +47,22 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
     # 無効なパスワードの確認
     patch password_reset_path(user.reset_token),
       params: { email: user.email,
-          user: { password: "foobar",
-                  password_confirmation: "hogehoge" } }
+                user: { password: "foobar",
+                        password_confirmation: "hogehoge" } }
     assert_select 'div#error_explanation'
 
     # パスワードが空
     patch password_reset_path(user.reset_token),
       params: { email: user.email,
-          user: { password: '',
-                  password_confirmation: '' } }
+                user: { password: '',
+                        password_confirmation: '' } }
     assert_select 'div#error_explanation'
 
     # 有効なパスワードで更新が完了
     patch password_reset_path(user.reset_token),
       params: { email: user.email,
-          user: { password: 'foobar',
-                  password_confirmation: 'foobar' } }
+                user: { password: 'foobar',
+                        password_confirmation: 'foobar' } }
     assert is_logged_in?
     assert_nil user.reload.reset_digest
     assert_not flash.empty?
@@ -78,8 +78,8 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
       @user.update_attribute(:reset_sent_at, 3.hours.ago)
     patch password_reset_path(@user.reset_token),
       params: { email: @user.email,
-          user: { password: 'foobar',
-                  password_confirmation: 'foobar' } }
+                user: { password: 'foobar',
+                        password_confirmation: 'foobar' } }
     assert_response :redirect
     follow_redirect!
     assert_match /expired/i, response.body
