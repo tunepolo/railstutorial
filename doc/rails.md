@@ -30,8 +30,22 @@ Userモデルと関連を持つMicropostモデルを生成する。
 $ rails generate model Micropost content:text user:references
 ```
 
-## DBのマイグレーション
+## DB操作
+
+### マイグレーション
 
 ```
 $ rails db:migrate
+```
+
+### DBのリセット
+
+```
+$ rails db:migrate:reset
+```
+
+### 初期データ/ダミーデータの挿入
+
+```
+$ rails db:seed
 ```
