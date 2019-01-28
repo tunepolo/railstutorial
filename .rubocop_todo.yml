@@ -8,12 +8,6 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Layout/EmptyLineAfterGuardClause:
-  Exclude:
-    - 'app/models/user.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Layout/EmptyLines:
   Exclude:
     - 'bin/setup'
