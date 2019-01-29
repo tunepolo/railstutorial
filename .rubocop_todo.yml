@@ -8,12 +8,6 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Layout/EmptyLines:
-  Exclude:
-    - 'bin/setup'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Layout/EmptyLinesAroundAccessModifier:
   Exclude:
     - 'app/controllers/password_resets_controller.rb'
