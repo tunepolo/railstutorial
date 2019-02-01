@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class PasswordResetsTest < ActionDispatch::IntegrationTest
-
   def setup
     ActionMailer::Base.deliveries.clear
     @user = users(:michael)
@@ -84,5 +83,4 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_match /expired/i, response.body
   end
-
 end

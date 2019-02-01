@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class UsersSignupTest < ActionDispatch::IntegrationTest
-
   def setup
     ActionMailer::Base.deliveries.clear
   end
@@ -48,5 +47,4 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_not flash.empty?
     assert is_logged_in?
   end
-
 end

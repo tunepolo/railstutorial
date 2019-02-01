@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class MicropostTest < ActiveSupport::TestCase
-
   def setup
     @user = users(:michael)
     @micropost = @user.microposts.build(content: "Lorem ipsum")
@@ -29,5 +28,4 @@ class MicropostTest < ActiveSupport::TestCase
   test "order should be most recent first" do
     assert_equal microposts(:most_recent), Micropost.first
   end
-
 end

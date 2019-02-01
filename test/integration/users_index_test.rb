@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class UsersIndexTest < ActionDispatch::IntegrationTest
-
   def setup
     @admin = users(:michael)
     @non_admin = users(:archer)
@@ -39,5 +38,4 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
     get user_path(@non_activated)
     assert_redirected_to root_url
   end
-
 end
