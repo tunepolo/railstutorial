@@ -11,6 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20190205223028) do
+
   create_table "microposts", force: :cascade do |t|
     t.text "content"
     t.integer "user_id"
@@ -26,8 +27,7 @@ ActiveRecord::Schema.define(version: 20190205223028) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
-    t.index %w[follower_id followed_id], name: "index_relationships_on_follower_id_and_followed_id",
-                                         unique: true
+    t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
@@ -46,4 +46,5 @@ ActiveRecord::Schema.define(version: 20190205223028) do
     t.datetime "reset_sent_at"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
+
 end
