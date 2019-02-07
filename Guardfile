@@ -38,7 +38,7 @@ end
 # 与えられたリソースに対応する統合テストを返す
 def integration_tests(resource = :all)
   if resource == :all
-    Dir["test/integration/*"]  else
+    Dir["test/integration/*"] else
     Dir["test/integration/#{resource}_*.rb"]
   end
 end
