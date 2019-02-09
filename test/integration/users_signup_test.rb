@@ -5,13 +5,13 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     ActionMailer::Base.deliveries.clear
   end
 
-  test "invalid signup information" do
+  test 'invalid signup information' do
     get signup_path
     assert_no_difference 'User.count' do
-      post signup_path, params: { user: { name: "",
-                                          email: "user.invalid",
-                                          password: "foo",
-                                          password_confirmation: "bar" } }
+      post signup_path, params: { user: { name: '',
+                                          email: 'user.invalid',
+                                          password: 'foo',
+                                          password_confirmation: 'bar' } }
     end
     assert_template 'users/new'
     assert_select 'div#error_explanation'
@@ -19,13 +19,13 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_select 'form[action="/signup"]'
   end
 
-  test "valid signup information with account activation" do
+  test 'valid signup information with account activation' do
     get signup_path
     assert_difference 'User.count', 1 do
-      post signup_path, params: { user: { name: "Example User",
-                                          email: "user@example.com",
-                                          password: "password",
-                                          password_confirmation: "password" } }
+      post signup_path, params: { user: { name: 'Example User',
+                                          email: 'user@example.com',
+                                          password: 'password',
+                                          password_confirmation: 'password' } }
     end
     assert_equal 1, ActionMailer::Base.deliveries.size
     user = assigns(:user)
@@ -34,10 +34,10 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     log_in_as(user)
     assert_not is_logged_in?
     # 有効化トークンが不正な場合のログインも失敗する
-    get edit_account_activation_path("invalid token", email: user.email)
+    get edit_account_activation_path('invalid token', email: user.email)
     assert_not is_logged_in?
     # トークンは正しいが、メールアドレスが無効な場合
-    get edit_account_activation_path(user.activation_token, email: "wrong")
+    get edit_account_activation_path(user.activation_token, email: 'wrong')
     assert_not is_logged_in?
     # 有効化トークンが正しい場合
     get edit_account_activation_path(user.activation_token, email: user.email)
