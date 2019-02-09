@@ -79,7 +79,7 @@ class User < ApplicationRecord
 
   # 試作feedの定義
   def feed
-    Micropost.where("user_id=?", id)
+    Micropost.where("user_id IN (?) OR user_id=?", following_ids, id)
   end
 
   # ユーザをフォローする
