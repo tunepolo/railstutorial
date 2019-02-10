@@ -34,3 +34,4 @@ jobs:
 
       # テストの実行
       - run: rails test
+      - run: bundle exec rubocop -c .rubocop.yml
