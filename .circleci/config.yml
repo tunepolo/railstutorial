@@ -3,9 +3,16 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.6.1-node-browsers
+        environment:
+          RAILS_ENV: test
     steps:
       # コードのチェックアウト
       - checkout
+
+      # Bundlerのバージョン確認
+      - run:
+          name: Which bundler?
+          command: bundle -v
 
       # bundle installのキャシュがあればそれを取ってくる
       - restore_cache:
@@ -15,7 +22,9 @@ jobs:
             - gem-cache
 
       # bundle installの実行
-      - run: bundle install
+      - run:
+          name: Bundle Install
+          command: bundle install
 
       # bundle installのデータをキャッシュ
       - save_cache:
@@ -25,13 +34,11 @@ jobs:
 
       # 初期設定
       - run:
-          name: Create test DB
-          environment:
-            RAILS_ENV: test
+          name: Database setup
           command: |
             rails db:create
             rails db:migrate
 
       # テストの実行
       - run: rails test
-      - run: bundle exec rubocop -c .rubocop.yml
+      - run: bundle exec rubocop

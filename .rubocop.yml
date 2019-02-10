@@ -6,6 +6,7 @@ AllCops:
     - 'bin/**/*'
     - 'node_modules/**/*'
     - 'vendor/**/*'
+    - "db/schema.rb"
 
 # 日本語でのコメントを許可
 AsciiComments:
