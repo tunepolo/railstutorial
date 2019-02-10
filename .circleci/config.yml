@@ -24,7 +24,13 @@ jobs:
             - vendor/bundle
 
       # 初期設定
-      - run: bundle exec rails db:create db:migrate RAILS_ENV=test
+      - run:
+          name: Create test DB
+          environment:
+            RAILS_ENV: test
+          command: |
+            rails db:create
+            rails db:migrate
 
       # テストの実行
-      - run: bundle exec rails test
+      - run: rails test
