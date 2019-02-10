@@ -11,6 +11,12 @@ $ circleci config validate
 Config file at .circleci/config.yml is valid.
 ```
 
+設定ファイルが問題無かったら実行する。
+
+```
+$ circleci local execute
+```
+
 ## 参考リンク
 
 - [いまさらだけどCircleCIに入門したので分かりやすくまとめてみた](https://qiita.com/gold-kou/items/4c7e62434af455e977c2)
