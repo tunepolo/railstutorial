@@ -20,3 +20,4 @@ $ circleci local execute
 ## 参考リンク
 
 - [いまさらだけどCircleCIに入門したので分かりやすくまとめてみた](https://qiita.com/gold-kou/items/4c7e62434af455e977c2)
+- [Circle CI 2.0 移行時のキャッシュ設定メモ](https://qiita.com/gaaamii/items/b2e8178d7d6e1423374f)
