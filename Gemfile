@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem "bcrypt", '~> 3.1.12'
+gem 'bcrypt', '~> 3.1.12'
 gem 'bootstrap-sass', '~> 3.3.7'
 gem 'bootstrap-will_paginate', '~> 1.0.0'
 gem 'carrierwave', '~> 1.2.2'
