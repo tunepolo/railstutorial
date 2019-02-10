@@ -18,6 +18,7 @@ gem 'will_paginate', '3.1.6'
 
 group :development, :test do
   gem 'byebug', '9.0.6', platform: :mri
+  gem 'rubocop', '0.63.1'
   gem 'sqlite3', '1.3.13'
 end
 

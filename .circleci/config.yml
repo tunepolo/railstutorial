@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.6.1-node-browsers
+        environment:
+          RAILS_ENV: test
+    steps:
+      # コードのチェックアウト
+      - checkout
+
+      # Bundlerのバージョン確認
+      - run:
+          name: Which bundler?
+          command: bundle -v
+
+      # bundle installのキャシュがあればそれを取ってくる
+      - restore_cache:
+          keys:
+            - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - gem-cache-{{ arch }}-{{ .Branch }}
+            - gem-cache
+
+      # bundle installの実行
+      - run:
+          name: Bundle Install
+          command: bundle install
+
+      # bundle installのデータをキャッシュ
+      - save_cache:
+          key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      # 初期設定
+      - run:
+          name: Database setup
+          command: |
+            rails db:create
+            rails db:migrate
+
+      # テストの実行
+      - run: rails test
+      - run: bundle exec rubocop
