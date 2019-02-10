@@ -5,6 +5,7 @@ jobs:
       - image: circleci/ruby:2.6.1-node-browsers
         environment:
           RAILS_ENV: test
+          REVIEWDOG_VERSION: 0.9.11
     steps:
       # コードのチェックアウト
       - checkout
@@ -26,6 +27,12 @@ jobs:
           name: Bundle Install
           command: bundle install
 
+      # Reviewdogのインストール
+      - run:
+          name: Install Reviewdog
+          command: |
+            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
+
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
@@ -40,5 +47,11 @@ jobs:
             rails db:migrate
 
       # テストの実行
-      - run: rails test
-      - run: bundle exec rubocop
+      - run:
+          name: Rails Test
+          command: rails test
+
+      # Rubocop & Reviewdogの実行
+      - run:
+          name: Rubocop & Reviewdog
+          command: bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
