@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/tunepolo/railstutorial.svg?style=svg)](https://circleci.com/gh/tunepolo/railstutorial)
+
 # Ruby on Railsチュートリアルのサンプルアプリケーション
 
 これは、次の教材で作られたサンプルアプリケーションです。
