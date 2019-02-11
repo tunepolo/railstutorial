@@ -41,7 +41,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/workspace
-      - run: bundle --path vendor/bundle
+      - run: bundle install --path vendor/bundle
 
       # 初期設定
       - run:
@@ -60,7 +60,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/workspace
-      - run: bundle --path vendor/bundle
+      - run: bundle install --path vendor/bundle
 
       # Reviewdogのインストール
       - run:
