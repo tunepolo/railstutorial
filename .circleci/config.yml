@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/workspace
   docker:
-    - image: circleci/ruby:2.6.1-node-browsers
+    - image: circleci/ruby:2.5.3-node-browsers
       environment:
         BUNDLE_JOBS: 3
         BUNDLE_RETRY: 3
@@ -25,9 +25,7 @@ jobs:
           - gem-cache
       - run:
           name: Bundle Install
-          command: |
-            gem install bundler:2.0.1
-            bundle check || bundle install
+          command: bundle install
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
