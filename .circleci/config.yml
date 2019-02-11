@@ -1,52 +1,46 @@
 version: 2
+
+defaults: &defaults
+  working_directory: ~/workspace
+  docker:
+    - image: circleci/ruby:2.6.1-node-browsers
+      environment:
+        BUNDLE_JOBS: 3
+        BUNDLE_RETRY: 3
+        BUNDLE_PATH: vendor/bundle
+        RAILS_ENV: test
+        REVIEWDOG_VERSION: 0.9.11
+
 jobs:
-  build:
-    docker:
-      - image: circleci/ruby:2.6.1-node-browsers
-        environment:
-          BUNDLER_VERSION: 2.0.1
-          RAILS_ENV: test
-          REVIEWDOG_VERSION: 0.9.11
+  bundle_install:
+    <<: *defaults
     steps:
-      # コードのチェックアウト
       - checkout
-
-      # Bundlerのバージョン確認
-      - run:
-          name: Update bundler
-          command: |
-            sudo gem update --system
-            sudo gem uninstall bundler
-            sudo rm /usr/local/bin/bundle
-            sudo rm /usr/local/bin/bundler
-            sudo gem install bundler
-      - run:
-          name: Which bundler?
-          command: bundle -v
-
-      # bundle installのキャシュがあればそれを取ってくる
+      - attach_workspace:
+          at: ~/workspace
       - restore_cache:
           keys:
-            - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-            - gem-cache-{{ arch }}-{{ .Branch }}
-            - gem-cache
-
-      # bundle installの実行
+          - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          - gem-cache-{{ arch }}-{{ .Branch }}
+          - gem-cache
       - run:
           name: Bundle Install
-          command: bundle check --path=vendor/bundle || bundle install --path vendor/bundle --clean --jobs 4 --retry 3
-
-      # Reviewdogのインストール
-      - run:
-          name: Install Reviewdog
-          command: |
-            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
-
+          command: bundle check || bundle install --clean
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
           paths:
-            - ./vendor/bundle
+            - ~workspace/vendor/bundle
+      - persist_to_workspace:
+          root: .
+          paths: vendor/bundle
+
+  rails_minitest:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/workspace
 
       # 初期設定
       - run:
@@ -54,13 +48,35 @@ jobs:
           command: |
             bundle exec rails db:create
             bundle exec rails db:migrate
-
-      # テストの実行
       - run:
-          name: Rails Test
+          name: Rails Minitest
           command: bundle exec rake test
 
+  rubocop:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/workspace
+
+      # Reviewdogのインストール
+      - run:
+          name: Install Reviewdog
+          command: |
+            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
       # Rubocop & Reviewdogの実行
       - run:
           name: Rubocop & Reviewdog
           command: bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
+
+workflows:
+  version: 2
+  continuous-integration:
+    jobs:
+      - bundle_install
+      - rails_minitest:
+          requires:
+            - bundle_install
+      - rubocop:
+          requires:
+            - bundle_install
