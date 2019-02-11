@@ -5,6 +5,9 @@ defaults: &defaults
   docker:
     - image: circleci/ruby:2.6.1-node-browsers
       environment:
+        BUNDLE_JOBS: 3
+        BUNDLE_RETRY: 3
+        BUNDLE_PATH: vendor/bundle
         RAILS_ENV: test
         REVIEWDOG_VERSION: 0.9.11
 
@@ -22,7 +25,7 @@ jobs:
           - gem-cache
       - run:
           name: Bundle Install
-          command: bundle install --jobs=4 --retry=3 --path vendor/bundle
+          command: bundle check || bundle install
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
