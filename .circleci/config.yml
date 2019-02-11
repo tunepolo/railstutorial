@@ -25,7 +25,7 @@ jobs:
       # bundle installの実行
       - run:
           name: Bundle Install
-          command: bundle install
+          command: bundle install --path vendor/bundle
 
       # Reviewdogのインストール
       - run:
