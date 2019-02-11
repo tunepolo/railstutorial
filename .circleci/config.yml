@@ -9,7 +9,7 @@ defaults: &defaults
         REVIEWDOG_VERSION: 0.9.11
 
 jobs:
-  bundle_dependencies:
+  bundle_install:
     <<: *defaults
     steps:
       - checkout
@@ -32,7 +32,7 @@ jobs:
           root: .
           paths: vendor/bundle
 
-  rake_test:
+  rails_minitest:
     <<: *defaults
     steps:
       - checkout
@@ -62,11 +62,15 @@ jobs:
           name: Rubocop & Reviewdog
           command: bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
 
+
 workflows:
   version: 2
-  build_and_test:
+  continuous-integration:
     jobs:
-      - bundle_dependencies
-      - rake_test:
+      - bundle_install
+      - rails_minitest:
           requires:
-            - bundle_dependencies
+            - bundle_install
+      - rubocop:
+          requires:
+            - bundle_install
