@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 defaults: &defaults
   working_directory: ~/workspace
@@ -70,7 +70,6 @@ jobs:
           command: bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
 
 workflows:
-  version: 2
   continuous-integration:
     jobs:
       - bundle_install
