@@ -25,7 +25,9 @@ jobs:
           - gem-cache
       - run:
           name: Bundle Install
-          command: bundle check || bundle install
+          command: |
+            gem install bundler:2.0.1
+            bundle check || bundle install
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
