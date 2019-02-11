@@ -22,7 +22,7 @@ jobs:
           - gem-cache
       - run:
           name: Bundle Install
-          command: bundle install
+          command: bundle install --jobs=4 --retry=3 --path vendor/bundle
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
