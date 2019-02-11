@@ -1,46 +1,25 @@
 version: 2
 
-references:
-  defaults: &defaults
-    working_directory: ~/workspace
-
-  docker_image: &docker_image
-    image: circleci/ruby:2.6.1-node-browsers
-    environment:
-      RAILS_ENV: test
-      REVIEWDOG_VERSION: 0.9.11
-
-  restore_code_cache: &restore_code_cache
-    restore_cache:
-      keys:
-        - repo-cache-{{ .Environment.CIRCLE_SHA1 }}
-
-  restore_gem_cache: &restore_gem_cache
-    restore_cache:
-      keys:
-        - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-        - gem-cache-{{ arch }}-{{ .Branch }}
-        - gem-cache
+defaults: &defaults
+  working_directory: ~/workspace
+  docker:
+    - image: circleci/ruby:2.6.1-node-browsers
+      environment:
+        RAILS_ENV: test
+        REVIEWDOG_VERSION: 0.9.11
 
 jobs:
-  checkout_code:
-    <<: *defaults
-    docker:
-      - *docker_image
-    steps:
-      - checkout
-      - save_cache:
-          key: repo-cache-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/workspace
-
   bundle_dependencies:
     <<: *defaults
-    docker:
-      - *docker_image
     steps:
-      - *restore_code_cache
-      - *restore_gem_cache
+      - checkout
+      - attach_workspace:
+          at: ~/workspace
+      - restore_cache:
+          keys:
+          - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          - gem-cache-{{ arch }}-{{ .Branch }}
+          - gem-cache
       - run:
           name: Bundle Install
           command: bundle install
@@ -48,20 +27,17 @@ jobs:
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
           paths:
-            - vendor/bundle
-      # Reviewdogのインストール
-      - run:
-          name: Install Reviewdog
-          command: |
-            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
+            - ~workspace/vendor/bundle
+      - persist_to_workspace:
+          root: .
+          paths: vendor/bundle
 
-  test:
+  rake_test:
     <<: *defaults
-    docker:
-      - *docker_image
     steps:
-      - *restore_code_cache
-      - *restore_gem_cache
+      - checkout
+      - attach_workspace:
+          at: ~/workspace
       - run: bundle --path vendor/bundle
 
       # 初期設定
@@ -75,6 +51,12 @@ jobs:
           name: Rails Test
           command: rails test
 
+      # Reviewdogのインストール
+      - run:
+          name: Install Reviewdog
+          command: |
+            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
+
       # Rubocop & Reviewdogの実行
       - run:
           name: Rubocop & Reviewdog
@@ -84,10 +66,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - checkout_code
-      - bundle_dependencies:
-          requires:
-            - checkout_code
-      - test:
+      - bundle_dependencies
+      - rake_test:
           requires:
             - bundle_dependencies
