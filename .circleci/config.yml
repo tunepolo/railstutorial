@@ -5,6 +5,9 @@ defaults: &defaults
   docker:
     - image: circleci/ruby:2.6.1-node-browsers
       environment:
+        BUNDLE_JOBS: 3
+        BUNDLE_RETRY: 3
+        BUNDLE_PATH: vendor/bundle
         RAILS_ENV: test
         REVIEWDOG_VERSION: 0.9.11
 
@@ -22,7 +25,7 @@ jobs:
           - gem-cache
       - run:
           name: Bundle Install
-          command: bundle check --path=vendor/bundle || bundle install --path vendor/bundle --clean --jobs 4 --retry 3
+          command: bundle check || bundle install --clean
       # bundle installのデータをキャッシュ
       - save_cache:
           key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
@@ -38,7 +41,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/workspace
-      - run: bundle install --path vendor/bundle
 
       # 初期設定
       - run:
@@ -56,7 +58,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/workspace
-      - run: bundle install --path vendor/bundle
 
       # Reviewdogのインストール
       - run:
