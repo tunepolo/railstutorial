@@ -62,6 +62,7 @@ jobs:
     steps:
       - *restore_code_cache
       - *restore_gem_cache
+      - run: bundle --path vendor/bundle
 
       # 初期設定
       - run:
