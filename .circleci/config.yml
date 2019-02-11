@@ -1,43 +1,67 @@
 version: 2
+
+references:
+  defaults: &defaults
+    working_directory: ~/workspace
+
+  docker_image: &docker_image
+    image: circleci/ruby:2.6.1-node-browsers
+    environment:
+      RAILS_ENV: test
+      REVIEWDOG_VERSION: 0.9.11
+
+  restore_code_cache: &restore_code_cache
+    restore_cache:
+      keys:
+        - repo-cache-{{ .Environment.CIRCLE_SHA1 }}
+
+  restore_gem_cache: &restore_gem_cache
+    restore_cache:
+      keys:
+        - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+        - gem-cache-{{ arch }}-{{ .Branch }}
+        - gem-cache
+
 jobs:
-  build:
+  checkout_code:
+    <<: *defaults
     docker:
-      - image: circleci/ruby:2.6.1-node-browsers
-        environment:
-          RAILS_ENV: test
-          REVIEWDOG_VERSION: 0.9.11
+      - *docker_image
     steps:
-      # コードのチェックアウト
       - checkout
+      - save_cache:
+          key: repo-cache-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/workspace
 
-      # Bundlerのバージョン確認
-      - run:
-          name: Which bundler?
-          command: bundle -v
-
-      # bundle installのキャシュがあればそれを取ってくる
-      - restore_cache:
-          keys:
-            - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-            - gem-cache-{{ arch }}-{{ .Branch }}
-            - gem-cache
-
-      # bundle installの実行
+  bundle_dependencies:
+    <<: *defaults
+    docker:
+      - *docker_image
+    steps:
+      - *restore_code_cache
+      - *restore_gem_cache
       - run:
           name: Bundle Install
           command: bundle install
-
+      # bundle installのデータをキャッシュ
+      - save_cache:
+          key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
       # Reviewdogのインストール
       - run:
           name: Install Reviewdog
           command: |
             curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
 
-      # bundle installのデータをキャッシュ
-      - save_cache:
-          key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+  test:
+    <<: *defaults
+    docker:
+      - *docker_image
+    steps:
+      - *restore_code_cache
+      - *restore_gem_cache
 
       # 初期設定
       - run:
@@ -45,21 +69,6 @@ jobs:
           command: |
             rails db:create
             rails db:migrate
-
-      - persist_to_workspace:
-          root: . # workspaceのrootパス（絶対パスかworking_directoryからの相対パス）
-          paths:
-            - . # 共有するパス（絶対パスかrootからの相対パス）
-
-  test:
-    docker:
-      - image: circleci/ruby:2.6.1-node-browsers
-        environment:
-          RAILS_ENV: test
-          REVIEWDOG_VERSION: 0.9.11
-    steps:
-      - attach_workspace: # workspaceをアタッチする
-          at: .      # テストの実行
 
       - run:
           name: Rails Test
@@ -74,7 +83,10 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      - checkout_code
+      - bundle_dependencies:
+          requires:
+            - checkout_code
       - test:
-          requires: # buildが成功したら実行する
-            - build
+          requires:
+            - bundle_dependencies
