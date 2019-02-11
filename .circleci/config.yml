@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.6.1-node-browsers
         environment:
+          BUNDLER_VERSION: 2.0.1
           RAILS_ENV: test
           REVIEWDOG_VERSION: 0.9.11
     steps:
@@ -11,6 +12,14 @@ jobs:
       - checkout
 
       # Bundlerのバージョン確認
+      - run:
+          name: Update bundler
+          command: |
+            sudo gem update --system
+            sudo gem uninstall bundler
+            sudo rm /usr/local/bin/bundle
+            sudo rm /usr/local/bin/bundler
+            sudo gem install bundler
       - run:
           name: Which bundler?
           command: bundle -v
@@ -25,7 +34,7 @@ jobs:
       # bundle installの実行
       - run:
           name: Bundle Install
-          command: bundle check --path=vendor/bundle || bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: bundle check --path=vendor/bundle || bundle install --path vendor/bundle --clean --jobs 4 --retry 3
 
       # Reviewdogのインストール
       - run:
@@ -49,7 +58,7 @@ jobs:
       # テストの実行
       - run:
           name: Rails Test
-          command: bundle exec rails test
+          command: bundle exec rake test
 
       # Rubocop & Reviewdogの実行
       - run:
