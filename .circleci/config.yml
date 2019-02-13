@@ -53,11 +53,14 @@ jobs:
 
   rubocop:
     docker:
-      - image: udalov/rubocop
+      - image: cagedata/rubocop
         environment:
           REVIEWDOG_VERSION: 0.9.11
     steps:
       - checkout
+      - run:
+          name: Rubocop update
+          command: gem update rubocop
       # Reviewdogのインストール
       - run:
           name: Install Reviewdog
