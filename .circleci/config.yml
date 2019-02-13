@@ -1,47 +1,42 @@
 version: 2.1
 
-defaults: &defaults
-  working_directory: ~/workspace
-  docker:
-    - image: circleci/ruby:2.6.1-node-browsers
-      environment:
-        BUNDLE_JOBS: 3
-        BUNDLE_RETRY: 3
-        BUNDLE_PATH: vendor/bundle
-        RAILS_ENV: test
-        REVIEWDOG_VERSION: 0.9.11
+orbs:
+  ruby-orbs: sue445/ruby-orbs@1.4.3
+  reviewdog: yasuhiroki/reviewdog@0.0.3
+
+commands:
+  lint:
+    parameters:
+      lint_result_file_path:
+        description: Lint result file path
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Rubocop update
+          command: gem update rubocop
+      - run: rubocop --out <<parameters.lint_result_file_path>> || true
+      - store_artifacts:
+          path: <<parameters.lint_result_file_path>>
 
 jobs:
-  bundle_install:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/workspace
-      - restore_cache:
-          keys:
-          - gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-          - gem-cache-{{ arch }}-{{ .Branch }}
-          - gem-cache
-      - run:
-          name: Bundle Install
-          command: bundle check || bundle install --clean
-      # bundle installのデータをキャッシュ
-      - save_cache:
-          key: gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-          paths:
-            - ~workspace/vendor/bundle
-      - persist_to_workspace:
-          root: .
-          paths: vendor/bundle
-
   rails_minitest:
-    <<: *defaults
+    working_directory: ~/workspace
+    docker:
+      - image: circleci/ruby:2.6.1-node-browsers
+        environment:
+          RAILS_ENV: test
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/workspace
-
+      - ruby-orbs/bundle-install:
+          bundle_clean: true
+          bundle_extra_args: ''
+          bundle_gemfile: Gemfile
+          bundle_jobs: 4
+          bundle_path: vendor/bundle
+          bundle_retry: 3
+          cache_key_prefix: v1-bundle
+          restore_bundled_with: true
       # 初期設定
       - run:
           name: Database setup
@@ -52,30 +47,14 @@ jobs:
           name: Rails Minitest
           command: bundle exec rake test
 
-  rubocop:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/workspace
-
-      # Reviewdogのインストール
-      - run:
-          name: Install Reviewdog
-          command: |
-            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
-      # Rubocop & Reviewdogの実行
-      - run:
-          name: Rubocop & Reviewdog
-          command: bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
-
 workflows:
   continuous-integration:
     jobs:
-      - bundle_install
-      - rails_minitest:
-          requires:
-            - bundle_install
-      - rubocop:
-          requires:
-            - bundle_install
+      - rails_minitest
+      - reviewdog/reviewdog:
+          linter_image: cagedata/rubocop
+          reviewdog_format_option: '-f=rubocop'
+          run_linter_steps:
+            - lint:
+                lint_result_file_path: lint_result.txt
+          lint_result_file_path: lint_result.txt
