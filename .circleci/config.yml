@@ -58,7 +58,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/workspace
-
       # 初期設定
       - run:
           name: Database setup
