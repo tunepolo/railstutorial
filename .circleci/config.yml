@@ -58,7 +58,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/workspace
-
       # 初期設定
       - run:
           name: Database setup
@@ -69,15 +68,6 @@ jobs:
           name: Rails Minitest
           command: bundle exec rake test
 
-  rubocop:
-    reviewdog/reviewdog:
-        linter_image: cagedata/rubocop
-        reviewdog_format_option: '-f=rubocop'
-        run_linter_steps:
-          - lint:
-              lint_result_file_path: lint_result.txt
-        lint_result_file_path: lint_result.txt
-
 workflows:
   continuous-integration:
     jobs:
@@ -85,4 +75,10 @@ workflows:
       - rails_minitest:
           requires:
             - bundle_install
-      - rubocop
+      - reviewdog/reviewdog:
+          linter_image: cagedata/rubocop
+          reviewdog_format_option: '-f=rubocop'
+          run_linter_steps:
+            - lint:
+                lint_result_file_path: lint_result.txt
+          lint_result_file_path: lint_result.txt
