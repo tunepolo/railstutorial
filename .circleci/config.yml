@@ -53,7 +53,7 @@ jobs:
 
   rubocop:
     docker:
-      - image: cagedata/rubocop
+      - image: lendinghome/rubocop
         environment:
           REVIEWDOG_VERSION: 0.9.11
     steps:
