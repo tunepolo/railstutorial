@@ -1,5 +1,23 @@
 version: 2.1
 
+orbs:
+  reviewdog: yasuhiroki/reviewdog@0.0.3
+
+commands:
+  lint:
+    parameters:
+      lint_result_file_path:
+        description: Lint result file path
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Rubocop update
+          command: gem update rubocop
+      - run: rubocop --out <<parameters.lint_result_file_path>> || true
+      - store_artifacts:
+          path: <<parameters.lint_result_file_path>>
+
 defaults: &defaults
   working_directory: ~/workspace
   docker:
@@ -51,26 +69,6 @@ jobs:
           name: Rails Minitest
           command: bundle exec rake test
 
-  rubocop:
-    docker:
-      - image: cagedata/rubocop
-        environment:
-          REVIEWDOG_VERSION: 0.9.11
-    steps:
-      - checkout
-      - run:
-          name: Rubocop update
-          command: gem update rubocop
-      # Reviewdogのインストール
-      - run:
-          name: Install Reviewdog
-          command: |
-            curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
-      # Rubocop & Reviewdogの実行
-      - run:
-          name: Rubocop & Reviewdog
-          command: rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
-
 workflows:
   continuous-integration:
     jobs:
@@ -78,4 +76,10 @@ workflows:
       - rails_minitest:
           requires:
             - bundle_install
-      - rubocop
+      - reviewdog/reviewdog:
+          linter_image: cagedata/rubocop
+          reviewdog_format_option: '-f=rubocop'
+          run_linter_steps:
+            - lint:
+                lint_result_file_path: lint_result.txt
+          lint_result_file_path: lint_result.txt
