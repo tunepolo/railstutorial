@@ -9,7 +9,6 @@ defaults: &defaults
         BUNDLE_RETRY: 3
         BUNDLE_PATH: vendor/bundle
         RAILS_ENV: test
-        REVIEWDOG_VERSION: 0.9.11
 
 jobs:
   bundle_install:
@@ -53,12 +52,12 @@ jobs:
           command: bundle exec rake test
 
   rubocop:
-    <<: *defaults
+    docker:
+      - image: cagedata/rubocop
+        environment:
+          REVIEWDOG_VERSION: 0.9.11
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/workspace
-
       # Reviewdogのインストール
       - run:
           name: Install Reviewdog
@@ -76,6 +75,4 @@ workflows:
       - rails_minitest:
           requires:
             - bundle_install
-      - rubocop:
-          requires:
-            - bundle_install
+      - rubocop
