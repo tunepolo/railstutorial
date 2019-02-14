@@ -4,6 +4,14 @@ orbs:
   ruby-orbs: sue445/ruby-orbs@1.4.3
   reviewdog: yasuhiroki/reviewdog@0.0.3
 
+executors:
+  default:
+    working_directory: ~/workspace
+    docker:
+      - image: circleci/ruby:2.6.1-node-browsers
+        environment:
+          RAILS_ENV: test
+
 commands:
   lint:
     parameters:
@@ -21,11 +29,8 @@ commands:
 
 jobs:
   rails_minitest:
-    working_directory: ~/workspace
-    docker:
-      - image: circleci/ruby:2.6.1-node-browsers
-        environment:
-          RAILS_ENV: test
+    executor:
+      name: default
     steps:
       - checkout
       - ruby-orbs/bundle-install:
