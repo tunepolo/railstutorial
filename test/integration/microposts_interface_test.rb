@@ -5,7 +5,7 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     @user = users(:michael)
   end
 
-  test 'micropost interface' do
+  test 'micropost interface post' do
     log_in_as(@user)
     get root_path
     assert_select 'div.pagination'
@@ -27,6 +27,11 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
     follow_redirect!
     assert_match content, response.body
+  end
+
+  test 'micropost interface delete' do
+    log_in_as(@user)
+    get root_path
     # 投稿を削除する
     assert_select 'a', text: 'delete'
     first_micropost = @user.microposts.paginate(page: 1).first

@@ -11,3 +11,8 @@ AllCops:
 # 日本語でのコメントを許可
 AsciiComments:
   Enabled: false
+
+# Guradのwatch設定はブロックが長くなるのが避けられない
+Metrics/BlockLength:
+  Exclude:
+    - 'Guardfile'
