@@ -1,0 +1,5 @@
+- provide(:title, "Home")
+- if logged_in?
+  = render 'shared/home_logged_in'
+- else
+  = render 'shared/home_not_logged_in'
