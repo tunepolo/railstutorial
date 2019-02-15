@@ -24,15 +24,34 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
 
     # パスワード再設定フォームのテスト
     user = assigns(:user)
-    # メールアドレスが無効
-    get edit_password_reset_path(user.reset_token, email: '')
-    assert_redirected_to root_url
 
-    # 無効なユーザの場合
+    # 有効なパスワードで更新が完了
+    patch password_reset_path(user.reset_token),
+          params: { email: user.email,
+                    user: { password: 'foobar',
+                            password_confirmation: 'foobar' } }
+    assert logged_in?
+    assert_nil user.reload.reset_digest
+    assert_not flash.empty?
+    assert_redirected_to user
+  end
+
+  test 'password resets - unactivated user' do
+    post password_resets_path, params: { password_reset: { email: @user.email } }
+    user = assigns(:user)
+
     user.toggle!(:activated)
     get edit_password_reset_path(user.reset_token, email: user.email)
     assert_redirected_to root_url
-    user.toggle!(:activated)
+  end
+
+  test 'password resets - email & token validation' do
+    post password_resets_path, params: { password_reset: { email: @user.email } }
+    user = assigns(:user)
+
+    # メールアドレスが無効
+    get edit_password_reset_path(user.reset_token, email: '')
+    assert_redirected_to root_url
 
     # メールアドレスが有効でトークンが無効な場合
     get edit_password_reset_path('wrong token', email: user.email)
@@ -42,6 +61,11 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
     get edit_password_reset_path(user.reset_token, email: user.email)
     assert_template 'password_resets/edit'
     assert_select 'input[name=email][type=hidden][value=?]', user.email
+  end
+
+  test 'password resets - error_explanation' do
+    post password_resets_path, params: { password_reset: { email: @user.email } }
+    user = assigns(:user)
 
     # 無効なパスワードの確認
     patch password_reset_path(user.reset_token),
@@ -56,16 +80,6 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
                     user: { password: '',
                             password_confirmation: '' } }
     assert_select 'div#error_explanation'
-
-    # 有効なパスワードで更新が完了
-    patch password_reset_path(user.reset_token),
-          params: { email: user.email,
-                    user: { password: 'foobar',
-                            password_confirmation: 'foobar' } }
-    assert is_logged_in?
-    assert_nil user.reload.reset_digest
-    assert_not flash.empty?
-    assert_redirected_to user
   end
 
   test 'expired token' do

@@ -23,15 +23,13 @@ class PasswordResetsController < ApplicationController
   def update
     if params[:user][:password].empty?
       @user.errors.add(:password, :blank)
-      render 'edit'
     elsif @user.update_attributes(user_params)
       log_in @user
       @user.update_attribute(:reset_digest, nil)
       flash[:success] = 'Password has been reset.'
-      redirect_to @user
-    else
-      render 'edit'
+      return redirect_to @user
     end
+    render 'edit'
   end
 
   private
@@ -51,9 +49,9 @@ class PasswordResetsController < ApplicationController
 
   # トークンが期限切れか確認する
   def check_expiration
-    if @user.password_reset_expired?
-      flash[:danger] = 'Password reset has expired.'
-      redirect_to new_password_reset_url
-    end
+    return unless @user.password_reset_expired?
+
+    flash[:danger] = 'Password reset has expired.'
+    redirect_to new_password_reset_url
   end
 end
