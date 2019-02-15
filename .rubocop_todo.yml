@@ -7,10 +7,6 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # Offense count: 2
-Metrics/AbcSize:
-  Max: 26
-
-# Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.
 # SupportedStyles: nested, compact
