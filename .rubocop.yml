@@ -16,3 +16,7 @@ AsciiComments:
 Metrics/BlockLength:
   Exclude:
     - 'Guardfile'
+
+# TODO: ドキュメント用のコメントは後で書く
+Style/Documentation:
+  Enabled: false
