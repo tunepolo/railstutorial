@@ -1,5 +1,3 @@
-inherit_from: .rubocop_todo.yml
-
 # テスト対象から除外
 AllCops:
   Exclude:
@@ -24,3 +22,7 @@ Style/Documentation:
 # 1行の長さ上限は120とする
 Metrics/LineLength:
   Max: 120
+
+# Railsで自動生成されたコードではmodule定義の形式はそのままとする。
+Style/ClassAndModuleChildren:
+  Enabled: false
