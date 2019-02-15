@@ -40,9 +40,3 @@ Style/MultilineTernaryOperator:
 Style/PercentLiteralDelimiters:
   Exclude:
     - 'config/spring.rb'
-
-# Offense count: 27
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  Max: 112

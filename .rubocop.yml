@@ -20,3 +20,7 @@ Metrics/BlockLength:
 # TODO: ドキュメント用のコメントは後で書く
 Style/Documentation:
   Enabled: false
+
+# 1行の長さ上限は120とする
+Metrics/LineLength:
+  Max: 120
