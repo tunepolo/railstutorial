@@ -28,8 +28,3 @@ Style/MixinUsage:
   Exclude:
     - 'bin/setup'
     - 'bin/update'
-
-# Offense count: 1
-Style/MultilineTernaryOperator:
-  Exclude:
-    - 'app/models/user.rb'
