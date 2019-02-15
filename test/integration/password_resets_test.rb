@@ -37,6 +37,7 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
   end
 
   test 'password resets - unactivated user' do
+    post password_resets_path, params: { password_reset: { email: @user.email } }
     user = assigns(:user)
 
     user.toggle!(:activated)
@@ -45,6 +46,7 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
   end
 
   test 'password resets - email & token validation' do
+    post password_resets_path, params: { password_reset: { email: @user.email } }
     user = assigns(:user)
 
     # メールアドレスが無効
@@ -62,6 +64,7 @@ class PasswordResetsTest < ActionDispatch::IntegrationTest
   end
 
   test 'password resets - error_explanation' do
+    post password_resets_path, params: { password_reset: { email: @user.email } }
     user = assigns(:user)
 
     # 無効なパスワードの確認
