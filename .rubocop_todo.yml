@@ -17,9 +17,3 @@ Metrics/AbcSize:
 Style/ClassAndModuleChildren:
   Exclude:
     - 'test/test_helper.rb'
-
-# Offense count: 2
-Style/MixinUsage:
-  Exclude:
-    - 'bin/setup'
-    - 'bin/update'
