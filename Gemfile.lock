@@ -427,6 +427,8 @@ GEM
     will_paginate (3.1.6)
     xml-simple (1.1.5)
     xmlrpc (0.3.0)
+    xray-rails (0.3.1)
+      rails (>= 3.1.0)
 
 PLATFORMS
   ruby
@@ -466,6 +468,7 @@ DEPENDENCIES
   uglifier (~> 3.2.0)
   web-console (~> 3.5.1)
   will_paginate (~> 3.1.6)
+  xray-rails
 
 BUNDLED WITH
    1.17.3

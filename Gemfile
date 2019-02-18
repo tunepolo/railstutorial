@@ -21,6 +21,7 @@ group :development, :test do
   gem 'byebug', '~> 9.0.6', platform: :mri
   gem 'rubocop', '~> 0.63.1'
   gem 'sqlite3', '~> 1.3.13'
+  gem 'xray-rails'
 end
 
 group :development do
