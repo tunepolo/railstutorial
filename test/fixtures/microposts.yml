@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: microposts
+#
+#  id         :integer          not null, primary key
+#  content    :text
+#  user_id    :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  picture    :string
+#
+
 orange:
   content: "I just ate an orange!"
   created_at: <%= 10.minutes.ago %>
