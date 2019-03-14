@@ -246,10 +246,10 @@ GEM
     formatador (0.2.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    guard (2.13.0)
+    guard (2.15.0)
       formatador (>= 0.2.4)
-      listen (>= 2.7, <= 4.0)
-      lumberjack (~> 1.0)
+      listen (>= 2.7, < 4.0)
+      lumberjack (>= 1.0.12, < 2.0)
       nenv (~> 0.1)
       notiffany (~> 0.0)
       pry (>= 0.9.12)
@@ -463,7 +463,7 @@ DEPENDENCIES
   faker (~> 1.9.3)
   flamegraph
   fog (~> 1.42)
-  guard (~> 2.13.0)
+  guard (~> 2.15.0)
   guard-minitest (~> 2.4.4)
   hamlit-rails
   jbuilder (~> 2.7.0)
