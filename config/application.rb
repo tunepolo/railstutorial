@@ -17,5 +17,8 @@ module RailsTutorial
 
     # 認証トークンをremoteフォームに埋め込む
     config.action_view.embed_authenticity_token_in_remote_forms = true
+
+    # SQLite 3 adapterでbooleanの値を保持するのにInteger(1 / 0)を使用する
+    config.active_record.sqlite3.represent_boolean_as_integer = true
   end
 end
