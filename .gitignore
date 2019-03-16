@@ -28,5 +28,8 @@ vendor/bundle
 # Ignore Spring files.
 /sprint/*.pid
 
+# Ignore coverage folder
+coverage
+
 .DS_Store
 public
