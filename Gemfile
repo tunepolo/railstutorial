@@ -21,6 +21,7 @@ gem 'will_paginate', '~> 3.1.6'
 group :development, :test do
   gem 'byebug', '~> 11.0.0', platform: :mri
   gem 'rubocop', '~> 0.63.1'
+  gem 'simplecov'
   gem 'sqlite3', '~> 1.3.13'
   gem 'xray-rails'
 end
