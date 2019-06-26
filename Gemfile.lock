@@ -81,7 +81,7 @@ GEM
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     dry-inflector (0.1.2)
-    equatable (0.6.0)
+    equatable (0.6.1)
     erubi (1.8.0)
     excon (0.64.0)
     execjs (2.7.0)
