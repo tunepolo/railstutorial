@@ -260,8 +260,8 @@ GEM
     guard-minitest (2.4.6)
       guard-compat (~> 1.2)
       minitest (>= 3.0)
-    hamlit (2.9.5)
-      temple (>= 0.8.0)
+    hamlit (2.10.0)
+      temple (>= 0.8.2)
       thor
       tilt
     hamlit-rails (0.2.3)
