@@ -66,6 +66,7 @@ workflows:
     jobs:
       - rails_minitest
       - reviewdog/reviewdog:
+          context: org-global
           linter_image: cagedata/rubocop
           reviewdog_format_option: '-f=rubocop'
           run_linter_steps:
