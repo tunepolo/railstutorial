@@ -440,7 +440,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode-display_width (1.4.1)
-    uniform_notifier (1.12.1)
+    uniform_notifier (1.13.0)
     web-console (3.7.0)
       actionview (>= 5.0)
       activemodel (>= 5.0)
