@@ -21,7 +21,12 @@ gem 'will_paginate', '~> 3.1.6'
 group :development, :test do
   gem 'byebug', '~> 11.0.0', platform: :mri
   gem 'rubocop', '~> 0.63.1'
-  gem 'simplecov'
+
+  # Workaround for cc-test-reporter with SimpleCov 0.18.
+  # Stop upgrading SimpleCov until the following issue will be resolved.
+  # https://github.com/codeclimate/test-reporter/issues/418
+  gem 'simplecov', '~> 0.10', '< 0.18'
+
   gem 'sqlite3', '~> 1.3.13'
   gem 'xray-rails'
 end
