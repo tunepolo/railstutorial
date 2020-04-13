@@ -372,7 +372,7 @@ GEM
     rbovirt (0.1.7)
       nokogiri
       rest-client (> 1.7.0)
-    rbvmomi (2.4.0)
+    rbvmomi (2.4.1)
       builder (~> 3.0)
       json (>= 1.8)
       nokogiri (~> 1.5)
