@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   ruby-orbs: sue445/ruby-orbs@1.4.3
-  reviewdog: yasuhiroki/reviewdog@0.0.3
 
 executors:
   default:
@@ -65,11 +64,3 @@ workflows:
   continuous-integration:
     jobs:
       - rails_minitest
-      - reviewdog/reviewdog:
-          context: org-global
-          linter_image: cagedata/rubocop
-          reviewdog_format_option: '-f=rubocop'
-          run_linter_steps:
-            - lint:
-                lint_result_file_path: lint_result.txt
-          lint_result_file_path: lint_result.txt
